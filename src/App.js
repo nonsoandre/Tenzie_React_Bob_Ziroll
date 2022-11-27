@@ -1,24 +1,30 @@
 import { useState } from 'react';
 import './App.css';
 import Die from './Die';
+import {nanoid} from "nanoid";
 
 
 
 function App() {
-  //react state to ttrack dices
+  //react state to track dices
   const [dice, setDices] = useState(allNewDice())
 
     // function that returns an array of 10 random number
     function allNewDice (){
       const arrayElement = [];
       for (let i = 0; i < 10; i++){
-          arrayElement.push(Math.ceil(Math.random(i) * 6));
+          arrayElement.push({
+            value: Math.ceil(Math.random(i) * 6),
+            key: nanoid(),
+            isHeld: false
+          });
         }
+        console.log(arrayElement)
         return arrayElement;
     }
 
     
-    const diceElements = dice.map( dies => <Die value={dies} />)
+    const diceElements = dice.map( dies => <Die value={dies.value} key={dies.key }/>)
 
     
     function rollDice(){
