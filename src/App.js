@@ -16,7 +16,7 @@ function App() {
           arrayElement.push({
             value: Math.ceil(Math.random(i) * 6),
             key: nanoid(),
-            isHeld: false
+            isHeld: true
           });
         }
         console.log(arrayElement)
@@ -24,7 +24,7 @@ function App() {
     }
 
     
-    const diceElements = dice.map( dies => <Die value={dies.value} key={dies.key }/>)
+    const diceElements = dice.map( dies => <Die value={dies.value} key={dies.key} isHeld={dies.isHeld}/>)
 
     
     function rollDice(){
