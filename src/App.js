@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import './App.css';
 import Die from './Die';
 import {nanoid} from "nanoid";
@@ -7,23 +7,33 @@ import {nanoid} from "nanoid";
 
 function App() {
   //react state to track dices
-  const [dice, setDices] = useState(allNewDice())
+  const [dice, setDices] = useState(allNewDice());
+  const [tenzies, setTenzies] = useState(false);
+
+  useEffect(()=>{
+    console.log(`dice state changed`);
+  }, [dice]);
+
+
+  function generateDie(){
+    return {
+      value: Math.ceil(Math.random() * 6),
+      key: nanoid(),
+      isHeld: false  
+    }
+  }
 
     // function that returns an array of 10 random number
     function allNewDice (){
       const arrayElement = [];
       for (let i = 0; i < 10; i++){
-          arrayElement.push({
-            value: Math.ceil(Math.random(i) * 6),
-            key: nanoid(),
-            isHeld: false  
-          });
+          arrayElement.push(generateDie());
         }
         console.log(arrayElement)
         return arrayElement;
     }
 
-    
+    console.log(dice);
     const diceElements = dice.map( dies => <Die 
                                             value={dies.value} 
                                             key={dies.key} 
@@ -31,6 +41,7 @@ function App() {
                                             holdDice={() => holdDice(dies.key)}
                                             />
                                     )
+    console.log(diceElements)
 
     function holdDice(id){
       console.log(id);
@@ -46,7 +57,35 @@ function App() {
     }
 
     function rollDice(){
-      setDices(allNewDice());
+
+      
+      // old function
+      // setDices(allNewDice());
+     
+     
+      // New function
+      setDices((oldDices)=>{
+      //   // foreach of the items in the array if the item has isHeld don't change value
+      //   oldDices.map((die)=>{
+      //     if (die.isHeld){
+      //       return die;
+      //     }else{
+      //       return {
+      //         value: Math.ceil(Math.random() * 6),
+      //         key: nanoid(),
+      //         isHeld: false  
+      //       }
+      //     }
+      //   })
+  
+        return oldDices.map((die)=>{
+          const newDie =  die.isHeld ? 
+                    die : 
+                  generateDie()
+          console.log(newDie)    
+          return newDie
+        });
+      });
     }
 
     return (
