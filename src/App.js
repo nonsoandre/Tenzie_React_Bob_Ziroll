@@ -74,28 +74,56 @@ function App() {
      
      
       // New function
-      setDices((oldDices)=>{
-      //   // foreach of the items in the array if the item has isHeld don't change value
-      //   oldDices.map((die)=>{
-      //     if (die.isHeld){
-      //       return die;
-      //     }else{
-      //       return {
-      //         value: Math.ceil(Math.random() * 6),
-      //         key: nanoid(),
-      //         isHeld: false  
-      //       }
-      //     }
-      //   })
+      // setDices((oldDices)=>{
+      // //   // foreach of the items in the array if the item has isHeld don't change value
+      // //   oldDices.map((die)=>{
+      // //     if (die.isHeld){
+      // //       return die;
+      // //     }else{
+      // //       return {
+      // //         value: Math.ceil(Math.random() * 6),
+      // //         key: nanoid(),
+      // //         isHeld: false  
+      // //       }
+      // //     }
+      // //   })
   
-        return oldDices.map((die)=>{
-          const newDie =  die.isHeld ? 
-                    die : 
-                  generateDie()
-          console.log(newDie)    
-          return newDie
-        });
-      });
+      //   return oldDices.map((die)=>{
+      //     const newDie =  die.isHeld ? 
+      //               die : 
+      //             generateDie()
+      //     console.log(newDie)    
+      //     return newDie
+      //   });
+      // });
+
+      if (tenzies){
+        setDices(allNewDice());
+        setTenzies(false)
+      }else{
+        setDices((oldDices)=>{
+          //   // foreach of the items in the array if the item has isHeld don't change value
+          //   oldDices.map((die)=>{
+          //     if (die.isHeld){
+          //       return die;
+          //     }else{
+          //       return {
+          //         value: Math.ceil(Math.random() * 6),
+          //         key: nanoid(),
+          //         isHeld: false  
+          //       }
+          //     }
+          //   })
+      
+            return oldDices.map((die)=>{
+              const newDie =  die.isHeld ? 
+                        die : 
+                      generateDie()
+              console.log(newDie)    
+              return newDie
+            });
+          });
+      }
     }
 
     return (
@@ -110,7 +138,7 @@ function App() {
               className="roll-dice" 
               onClick={rollDice}
           >
-              {/* {tenzies ? "New Game" : "Roll"} */} Roll
+              {tenzies ? "New Game" : "Roll"}
           </button>
       </main>
   );
