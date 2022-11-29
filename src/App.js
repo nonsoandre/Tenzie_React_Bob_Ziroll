@@ -3,6 +3,20 @@ import './App.css';
 import Die from './Die';
 import {nanoid} from "nanoid";
 
+// Extra Credt Features to Add
+// 1. Put Real dots on the dice
+// 2. Track the number of rolls
+// 3. Track the time it took to win
+// 4. Save best time or track to local storage.
+
+// Solo Project
+// Quizical App.
+// Rquirements for Quizical App
+// 1.) 2 screens (start & questions)
+// 2.) Pull 5 question from OTDB API
+// 3.) Tally correct answers after "check answers" is clicked
+// 4.) Styled and Polished.
+
 
 
 function App() {
@@ -102,19 +116,6 @@ function App() {
         setTenzies(false)
       }else{
         setDices((oldDices)=>{
-          //   // foreach of the items in the array if the item has isHeld don't change value
-          //   oldDices.map((die)=>{
-          //     if (die.isHeld){
-          //       return die;
-          //     }else{
-          //       return {
-          //         value: Math.ceil(Math.random() * 6),
-          //         key: nanoid(),
-          //         isHeld: false  
-          //       }
-          //     }
-          //   })
-      
             return oldDices.map((die)=>{
               const newDie =  die.isHeld ? 
                         die : 
