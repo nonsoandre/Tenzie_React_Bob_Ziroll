@@ -23,6 +23,7 @@ function App() {
   //react state to track dices
   const [dice, setDices] = useState(allNewDice());
   const [tenzies, setTenzies] = useState(false);
+  const [count, setCount] = useState(0)
 
   useEffect(()=>{
     // check to see if all die is held
@@ -37,8 +38,7 @@ function App() {
     }
     console.log(`dice state changed ${allHeld}`);
   }, [dice]);
-
-
+  
   function generateDie(){
     return {
       value: Math.ceil(Math.random() * 6),
@@ -53,11 +53,11 @@ function App() {
       for (let i = 0; i < 10; i++){
           arrayElement.push(generateDie());
         }
-        console.log(arrayElement)
+        // console.log(arrayElement)
         return arrayElement;
     }
 
-    console.log(dice);
+    // console.log(dice);
     const diceElements = dice.map( dies => <Die 
                                             value={dies.value} 
                                             key={dies.key} 
@@ -65,11 +65,11 @@ function App() {
                                             holdDice={() => holdDice(dies.key)}
                                             />
                                     )
-    console.log(diceElements)
+    // console.log(diceElements)
 
     function holdDice(id){
-      console.log(id);
-      console.log(dice);
+      // console.log(id);
+      // console.log(dice);
       // dice.map(
       //   (die)=>{
       //     die.key === id ? setDices(oldDies => { oldDies, isHeld: true} : oldDies)
@@ -120,12 +120,14 @@ function App() {
               const newDie =  die.isHeld ? 
                         die : 
                       generateDie()
-              console.log(newDie)    
+              // console.log(newDie)    
               return newDie
             });
           });
       }
+      setCount((Oldcount) => Oldcount+ 1);
     }
+    console.log(count);
 
     return (
       <main>
