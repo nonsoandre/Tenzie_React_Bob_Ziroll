@@ -78,3 +78,16 @@ main {
 .lightGreen{
   background-color: #59e391;
 }
+
+button.reset-btn{
+  background-color: transparent;
+  border: 0;
+  text-decoration: underline;
+  letter-spacing: 5px;
+  margin-top: 20px;
+  cursor: pointer;
+}
+
+.display-off{
+  display: none;
+}

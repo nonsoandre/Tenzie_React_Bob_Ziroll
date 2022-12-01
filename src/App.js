@@ -81,11 +81,8 @@ function App() {
     }
 
     function rollDice(){
-
-      
       // old function
       // setDices(allNewDice());
-     
      
       // New function
       // setDices((oldDices)=>{
@@ -114,6 +111,7 @@ function App() {
       if (tenzies){
         setDices(allNewDice());
         setTenzies(false)
+        setCount(- 1)
       }else{
         setDices((oldDices)=>{
             return oldDices.map((die)=>{
@@ -127,6 +125,12 @@ function App() {
       }
       setCount((Oldcount) => Oldcount+ 1);
     }
+
+    function reset(){
+      setDices(allNewDice());
+      setTenzies(false);
+      setCount(0);
+    }
     console.log(count);
 
     return (
@@ -134,6 +138,7 @@ function App() {
           <h1 className="title">Tenzies</h1>
           <p className="instructions">Roll until all dice are the same. 
           Click each die to freeze it at its current value between rolls.</p>
+          { tenzies && <p><b>Total Rolls: {count}</b></p>}
           <div className="dice-container">
               {diceElements}  
           </div>
@@ -142,6 +147,12 @@ function App() {
               onClick={rollDice}
           >
               {tenzies ? "New Game" : "Roll"}
+          </button>
+          <button 
+              className={tenzies ? "display-off" : 'reset-btn'}
+              onClick={reset}
+            >
+             Reset
           </button>
       </main>
   );
