@@ -27,9 +27,85 @@ function App() {
   const [tenzies, setTenzies] = useState(false);
   const [count, setCount] = useState(0);
   const [newGame, setNewGame] = useState(true);
-  const [timeCount, settimeCount] = useState(Math.floor(new Date().getTime() / (1000 * 60 * 60 * 24) / (1000 * 60 * 60)))
+  const [time, setTime] = useState(0);
+  const [startTime, setStartTime] = useState(Date.now());
+  const [stopTime, setStopTime] = useState(0);
+  const [elapsedTime, setElapsedTime] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(false);
+  
+  let sec, msec, min;
 
+  const [s, setS] = useState("00")
+  const [ms, setMs] = useState("00")
+  const [m, setM] = useState("")
+
+  console.log("start-time: " + startTime)
+  console.log("elapsed-time: " + elapsedTime);
+  console.log("actual-time: " + time);
+
+
+  function handleStart(){
+    if(isPlaying){
+    
+      resetTime();
+    }else{
+
+      playTime();
+    }
+  }
+
+  function resetTime(){
+    setTimeout(()=>{
+      setIsPlaying(false)
+      setTime(null)
+      setStopTime(0)
+      setS("00")
+      setMs("00")
+      setM("")
+    }, 1)
+  }
+
+  function playTime(){
+    setTimeout(()=>{
+      // set how much time has gone so far
+      setElapsedTime(Date.now() - startTime);
+      // console.log(elapsedTime)
+      
+      // set the time
+      setTime(stopTime + elapsedTime);
+      // console.log(time);
+
+      // timer components
+      
+      // set seconds handle
+      sec = Math.floor(time/1000%60)
+      if(sec < 10) setS("0" + sec)
+      else setS(sec)
+      
+      // set msec handle
+      msec = Math.floor(time/10%100)
+      if(msec < 10) setMs("0" + msec)
+      else setMs(msec)
+      
+      // set minute handle
+      if(s == 0 && ms == 1){
+        min = Math.floor(time/60000)
+        if(min > 0) setM(min + ":")
+      }
+
+    }, 1)
+  }
+
+
+
+
+console.log(sec);
+console.log(isPlaying);
+
+  
+  
   useEffect(()=>{
+
     // check to see if all die is held
     const allHeld = dice.every(die => die.isHeld);
     // check to seel if all held die has the same value
@@ -38,9 +114,8 @@ function App() {
 
     if(allHeld && allSameValue === true){
       setTenzies(true);
-      // console.log(`You won!!`)
+      setIsPlaying(true);
     }
-    // console.log(`dice state changed ${allHeld}`);
   }, [dice]);
   
   function generateDie(){
@@ -59,6 +134,7 @@ function App() {
         }
         // console.log(arrayElement)
         return arrayElement;
+
     }
 
     // console.log(dice);
@@ -72,8 +148,6 @@ function App() {
     // console.log(diceElements)
 
     function holdDice(id){
-      // console.log(id);
-      // console.log(dice);
       // dice.map(
       //   (die)=>{
       //     die.key === id ? setDices(oldDies => { oldDies, isHeld: true} : oldDies)
@@ -85,54 +159,17 @@ function App() {
     }
 
     function rollDice(){
-      // old function
-      // setDices(allNewDice());
-     
-      // New function
-      // setDices((oldDices)=>{
-      // //   // foreach of the items in the array if the item has isHeld don't change value
-      // //   oldDices.map((die)=>{
-      // //     if (die.isHeld){
-      // //       return die;
-      // //     }else{
-      // //       return {
-      // //         value: Math.ceil(Math.random() * 6),
-      // //         key: nanoid(),
-      // //         isHeld: false  
-      // //       }
-      // //     }
-      // //   })
-  
-      //   return oldDices.map((die)=>{
-      //     const newDie =  die.isHeld ? 
-      //               die : 
-      //             generateDie()
-      //     console.log(newDie)    
-      //     return newDie
-      //   });
-      // });
-
       if (tenzies){
         setDices(allNewDice());
         setTenzies(false);
         setCount(- 1);
-        const mostRecentDate = new Date().getTime();
-        settimeCount(Math.floor(mostRecentDate / (1000 * 60 * 60 * 24) / (1000 * 60 * 60)));
-
-        // setTimeout(() => {
-          
-        // const millis = Date.now() - start;
-        
-        //   console.log(`seconds elapsed = ${Math.floor(millis / 1000)}`);
-        //   // expected output: seconds elapsed = 2
-        // }, 2000);
       }else{
         setDices((oldDices)=>{
             return oldDices.map((die)=>{
               const newDie =  die.isHeld ? 
                         die : 
                       generateDie()
-              // console.log(newDie)    
+              // console.log(newDie)   
               return newDie
             });
           });
@@ -143,34 +180,23 @@ function App() {
     }
 
     function reset(){
-      setDices(allNewDice());
+      setDices(allNewDice(resetTime()));
       setTenzies(false);
       setCount(0);
+      
     }
 
     function startGame(){
       setDices(allNewDice());
       setNewGame(false);
+
+    }
+
+    if(!newGame){
+      handleStart();
     }
     
-    
-    if(tenzies && newGame){
-      console.log("Finished Game Display");
-    } else if (!tenzies && !newGame){
-      console.log("In Game Display")
-    }else {
-      console.log("Fresh Game Display")
-    }
 
-    console.log(count);
-    console.log("tenzies: " + tenzies);
-    console.log("NewGame: " + newGame);
-
-    if (newGame){
-
-    }else{
-      console.log("fronPage")
-    }
 
     return (
       <main>
@@ -178,7 +204,9 @@ function App() {
          newGame ?
             <div className='row'>
               <h1 className="title">Play Tenzies</h1>
-              <h2>-</h2>
+              <p className="instructions">Roll until all dice are the same. 
+              Click each die to freeze it at its current value between rolls.</p>
+              {/* <h2>-</h2> */}
               <br></br>
               <button 
                     className="roll-dice" 
@@ -186,6 +214,7 @@ function App() {
                 >
                   Start
               </button>
+              <input id="startBtn" type="checkbox"/>
             </div>          
             :
 
@@ -204,7 +233,10 @@ function App() {
             </div>
           :
             <div className='row'>
-              <Timer />
+              <Timer   />
+              <div className="TimerBox">
+                { m + s }
+              </div>
               {/* <h1 className="title in-game-title">Tenzies</h1> */}
               {/* <p className="instructions">Roll until all dice are the same. 
               Click each die to freeze it at its current value between rolls.</p> */}
