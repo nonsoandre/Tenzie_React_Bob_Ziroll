@@ -2,7 +2,7 @@ import { useEffect, useState } from "react"
 
 
 
-function Timer() {
+function App() {
   const [isPlaying, setIsPlaying] = useState(false)
   // time
   const [startTime, setStartTime] = useState(Date.now())
@@ -52,8 +52,12 @@ function Timer() {
         if(min > 0) setM(min + ":")
       }
     }, 1)
+    console.log()
+    console.log(document.body.querySelector('#startBtn'))
   }
 
+  console.log(time);
+  console.log(startTime);
   useEffect(()=>{
     if(document.body.querySelector('#startBtn').checked) playTime()
   }, [time])
@@ -71,9 +75,9 @@ function Timer() {
     }, 1)
   }
 
-  function lap(){
-    setLaps(["#" + (laps.length + 1) + " " + m + s + "." + ms, ...laps])
-  }
+//   function lap(){
+//     setLaps(["#" + (laps.length + 1) + " " + m + s + "." + ms, ...laps])
+//   }
 
 
   return (
@@ -81,11 +85,11 @@ function Timer() {
       <div className="stopwatch-cont">
 
         {/* Laps List */}
-        <div className="laps">{
+        {/* <div className="laps">{
           laps.map((lap)=>(
             <div key={lap}>{lap}</div>
           ))
-        }</div>
+        }</div> */}
 
         {/* Time Container */}
         <div className="time-cont">
@@ -96,13 +100,13 @@ function Timer() {
 
         {/* Navigation */}
         <nav>
-          <div id="resetBtn" onClick={resetTime}></div>
+          {/* <div id="resetBtn" onClick={resetTime}></div> */}
           <input id="startBtn" type="checkbox" />
           <label htmlFor="startBtn" onClick={handleStart}>
             <div className="play"></div>
             <div className="pause"></div>
           </label>
-          <div id="lapBtn" onClick={lap}></div>
+          {/* <div id="lapBtn" onClick={lap}></div> */}
         </nav>
 
       </div>
@@ -110,4 +114,4 @@ function Timer() {
   )
 }
 
-export default Timer
+export default App

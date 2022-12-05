@@ -63,7 +63,7 @@ code {
   display: flex;
   justify-content: center;
   align-items: center;
-  display: none;
+  /* display: none; */
 }
 .stopwatch nav input {
   display: none;
