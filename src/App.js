@@ -1,9 +1,8 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import './App.css';
 import Die from './Die';
 import {nanoid} from "nanoid";
 import Confetti from 'react-confetti';
-import Timer from "./Timer";
 
 // Extra Credt Features to Add
 // 1. Put Real dots on the dice
@@ -27,82 +26,84 @@ function App() {
   const [tenzies, setTenzies] = useState(false);
   const [count, setCount] = useState(0);
   const [newGame, setNewGame] = useState(true);
-  const [time, setTime] = useState(0);
-  const [startTime, setStartTime] = useState(Date.now());
-  const [stopTime, setStopTime] = useState(0);
-  const [elapsedTime, setElapsedTime] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   
-  let sec, msec, min;
 
-  const [s, setS] = useState("00")
-  const [ms, setMs] = useState("00")
-  const [m, setM] = useState("")
 
-  console.log("start-time: " + startTime)
-  console.log("elapsed-time: " + elapsedTime);
-  console.log("actual-time: " + time);
+  const [minutes, setMinutes] = useState(0)
+  const [seconds, setSeconds] = useState(0)
+  const [startTimer, setStartTimer] = useState(false)
+  const [finishTime, setFinishTime ] = useState(JSON.parse(localStorage.getItem('time')) || [])
+
+
+  const getBestTime = () => {
+    const secArr = finishTime.map(time => time.sec);
+    const minArr = finishTime.map(time => time.min);
+    const min = Math.min(...minArr)
+    const sec = Math.min(...secArr)
+    console.log(secArr)
+    console.log(Math.min(...secArr))
+    return {
+      min,
+      sec
+    }
+  }
+
+  getBestTime()
+
+  useEffect(() => {
+    let interval = null;
+
+    if(startTimer === true){
+         if(seconds > 59){
+            setSeconds(0)
+            setMinutes(h => h + 1)
+         }else{
+            interval = setInterval(()=> {
+                setSeconds(m => m + 1)
+              }, 1000)
+         }
+    }
+
+  return () => clearInterval(interval)
+  }, [seconds, startTimer])
+
+
+
+// SET LS BUCHI
+  useEffect(()=> {
+    localStorage.setItem('time', JSON.stringify(finishTime))  
+  }, [finishTime])
+
+  // SAVE TIME GAME FINISHED
+  const handleSetFinishTime = (min, sec)=> {
+    setTimeout(() => {
+      setFinishTime(prev => [...prev, {min, sec}])
+    }, 1000)
+  }
+
+  // RESTART TIME FUNCTIONALITY
+  const handleRestartTime = () => {
+    setMinutes(0);
+    setSeconds(0)
+    setStartTimer(true)
+  }
 
 
   function handleStart(){
     if(isPlaying){
     
       resetTime();
-    }else{
-
-      playTime();
     }
   }
 
   function resetTime(){
     setTimeout(()=>{
       setIsPlaying(false)
-      setTime(null)
-      setStopTime(0)
-      setS("00")
-      setMs("00")
-      setM("")
     }, 1)
   }
 
-  function playTime(){
-    setTimeout(()=>{
-      // set how much time has gone so far
-      setElapsedTime(Date.now() - startTime);
-      // console.log(elapsedTime)
-      
-      // set the time
-      setTime(stopTime + elapsedTime);
-      // console.log(time);
-
-      // timer components
-      
-      // set seconds handle
-      sec = Math.floor(time/1000%60)
-      if(sec < 10) setS("0" + sec)
-      else setS(sec)
-      
-      // set msec handle
-      msec = Math.floor(time/10%100)
-      if(msec < 10) setMs("0" + msec)
-      else setMs(msec)
-      
-      // set minute handle
-      if(s == 0 && ms == 1){
-        min = Math.floor(time/60000)
-        if(min > 0) setM(min + ":")
-      }
-
-    }, 1)
-  }
-
-
-
-
-console.log(sec);
-console.log(isPlaying);
-
-  
+ 
   
   useEffect(()=>{
 
@@ -115,8 +116,12 @@ console.log(isPlaying);
     if(allHeld && allSameValue === true){
       setTenzies(true);
       setIsPlaying(true);
+      console.log('won')
+      setStartTimer(false);
+      handleSetFinishTime(minutes, seconds)
+      
     }
-  }, [dice]);
+  }, [dice, minutes, seconds]);
   
   function generateDie(){
     return {
@@ -163,6 +168,9 @@ console.log(isPlaying);
         setDices(allNewDice());
         setTenzies(false);
         setCount(- 1);
+        // RESET TIME AND GAME BUCHI
+      handleRestartTime()
+
       }else{
         setDices((oldDices)=>{
             return oldDices.map((die)=>{
@@ -183,12 +191,15 @@ console.log(isPlaying);
       setDices(allNewDice(resetTime()));
       setTenzies(false);
       setCount(0);
-      
+      // RESET TIME AND GAME BUCHI
+      handleRestartTime()
     }
 
     function startGame(){
       setDices(allNewDice());
       setNewGame(false);
+      // START TIME BUCHI
+      setStartTimer(true)
 
     }
 
@@ -208,6 +219,7 @@ console.log(isPlaying);
               Click each die to freeze it at its current value between rolls.</p>
               {/* <h2>-</h2> */}
               <br></br>
+              <p>Best Score : {`${getBestTime().min <= 9 ? '0' : ''}${getBestTime().min}:${getBestTime().sec <= 9 ? '0' : ''}${getBestTime().sec}`}</p>
               <button 
                     className="roll-dice" 
                     onClick={startGame}
@@ -222,8 +234,9 @@ console.log(isPlaying);
             <div className='row'>
               {tenzies && <Confetti />}
               <h1 className="title">Congratulations!</h1>
-              <h2>You have won</h2>
+              <h2>You have won in {`${minutes <= 9 ? '0' : ''}${minutes}:${seconds <= 9 ? '0' : ''}${seconds}`}</h2>
               <br></br>
+              <p>Best Score : {`${getBestTime().min <= 9 ? '0' : ''}${getBestTime().min}:${getBestTime().sec <= 9 ? '0' : ''}${getBestTime().sec}`}</p>
               <button 
                     className="roll-dice" 
                     onClick={rollDice}
@@ -233,9 +246,8 @@ console.log(isPlaying);
             </div>
           :
             <div className='row'>
-              <Timer   />
               <div className="TimerBox">
-                { m + s }
+              {`${minutes <= 9 ? '0' : ''}${minutes}:${seconds <= 9 ? '0' : ''}${seconds}`}
               </div>
               {/* <h1 className="title in-game-title">Tenzies</h1> */}
               {/* <p className="instructions">Roll until all dice are the same. 
