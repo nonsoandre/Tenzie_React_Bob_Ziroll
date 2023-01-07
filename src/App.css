@@ -102,3 +102,11 @@ button.reset-btn{
 .in-game-title{
   margin-bottom: 20px;
 }
+
+.TimerBox {
+  background-color: black;
+  color: #fff;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  font-size: 20px;
+}
