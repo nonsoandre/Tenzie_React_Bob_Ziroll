@@ -119,7 +119,6 @@ function App() {
       console.log('won')
       setStartTimer(false);
       handleSetFinishTime(minutes, seconds)
-      
     }
   }, [dice, minutes, seconds]);
   
